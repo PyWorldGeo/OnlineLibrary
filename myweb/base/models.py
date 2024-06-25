@@ -10,11 +10,20 @@ class Author(models.Model):
     def __str__(self):
         return self.name
 
+
+class Genre(models.Model):
+    name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
+
+
 # Create your models here.
 class Book(models.Model):
     author = models.ForeignKey(Author, on_delete=models.SET("Unknown Author"))
     picture = models.CharField(max_length=300)
     name = models.CharField(max_length=200)
+    genre = models.ManyToManyField(Genre, blank=True, related_name='books')
     description = models.TextField(max_length=500)
     content = models.CharField(max_length=200)
 
@@ -23,4 +32,4 @@ class Book(models.Model):
 
 
 class User(AbstractUser):
-    books = models.ManyToManyField(Book, blank=True, related_name='books')
+    books = models.ManyToManyField(Book, blank=True, related_name='users')
