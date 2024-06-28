@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Book, User, Genre
 from django.db.models import Q
+from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
 def home(request):
@@ -37,3 +38,58 @@ def profile(request, pk):
     heading = "My Books"
     context = {'books': books, "user": user, "heading": heading, "genres": genres}
     return render(request, 'base/profile.html', context)
+
+
+def adding(request, id):
+    book = Book.objects.get(id=id)
+    user = request.user
+    user.books.add(book)
+    return redirect('profile', user.id)
+
+
+def delete(request, id):
+    book = Book.objects.get(id=id)
+
+    if request.method == "POST":
+        request.user.books.remove(book)
+        return redirect('profile', request.user.id)
+
+    return render(request, 'base/delete.html', {'book': book})
+
+
+def login_page(request):
+    page = 'login'
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    if request.method == "POST":
+        username = request.POST.get('username').lower()
+        password = request.POST.get('password').lower()
+
+        try:
+            user = User.objects.get(username=username)
+        except:
+            pass # Error Message
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            pass # Error Message
+
+
+
+    context = {'page': page}
+    return render(request, 'base/login_register.html', context)
+
+
+def logaut_user(request):
+    logout(request)
+    return redirect('home')
+
+
+def register_page(request):
+    context = {}
+    return render(request, 'base/login_register.html', context)
