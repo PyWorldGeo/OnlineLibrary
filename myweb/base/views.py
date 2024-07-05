@@ -1,15 +1,15 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
 from .models import Book, User, Genre, Author
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import MyUserCreationForm, BookForm
-
+from .seeder import seeder_func
+from django.contrib import messages
 # Create your views here.
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ""
-
+    # seeder_func()
     # books = Book.objects.all()
     books = Book.objects.filter(Q(name__icontains=q) | Q(description__icontains=q) | Q(genre__name__icontains=q))
     books = list(set(books))
@@ -70,7 +70,7 @@ def login_page(request):
         try:
             user = User.objects.get(username=username)
         except:
-            pass # Error Message
+            messages.error(request, "Username doesn't exist!")
 
         user = authenticate(request, username=username, password=password)
 
@@ -78,7 +78,7 @@ def login_page(request):
             login(request, user)
             return redirect('home')
         else:
-            pass # Error Message
+            messages.error(request, "Username or Password is incorrect!")
 
     return render(request, 'base/login.html')
 
@@ -119,7 +119,7 @@ def add_book(request):
         form = BookForm(request.POST)
 
         new_book = Book(picture=request.FILES['picture'], name=form.data['name'], author=author,
-                        description=form.data['description'], file=request.FILES['file'])
+                        description=form.data['description'], file=request.FILES['file'], creator=request.user)
 
         new_book.save()
         new_book.genre.add(genre)
@@ -128,3 +128,8 @@ def add_book(request):
 
     context = {'form': form, 'authors': authors, 'genres': genres}
     return render(request, 'base/add_book.html', context)
+
+
+def reading(request, id):
+    book = Book.objects.get(id=id)
+    return render(request, 'base/reading.html', {'book': book})

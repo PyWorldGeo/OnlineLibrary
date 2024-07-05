@@ -7,6 +7,15 @@
     .genres {
         margin: 80px 30px;
     }
+
+    .row {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .card {
+        margin-bottom: 30px;
+    }
 </style>
 
 <div class="home-container">
@@ -25,9 +34,11 @@
         <div>
             <h1 id="unique" class="new">{{ heading }}:</h1>
         </div>
+        <a href="{% url 'add' %}">Add Book</a>
+        <br>
 
         <br>
-        <div style="display: flex;">
+        <div class="row">
             {% for book in books %}
                 <div class="card" style="width: 18rem; margin-left: 30px;">
                   <img src="{{ book.picture.url }}" class="card-img-top" alt="...">
@@ -37,7 +48,7 @@
                     <p class="card-text">{{ book.description |slice:":100" }}</p>
 
                     {% if request.user.is_authenticated %}
-                        <a href="#" class="btn btn-primary">Read</a>
+                        <a href="{% url 'reading' book.id %}" class="btn btn-primary">Read</a>
                         {% if book in request.user.books.all %}
                             <a href="{% url 'delete' book.id %}" class="btn btn-primary">Delete</a>
                         {% else %}

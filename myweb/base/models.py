@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils.timezone import now
+
 
 
 class Author(models.Model):
@@ -19,6 +21,7 @@ class Genre(models.Model):
 
 # Create your models here.
 class Book(models.Model):
+    creator = models.ForeignKey('User', on_delete=models.SET("Unknown Creator"))
     author = models.ForeignKey(Author, on_delete=models.SET("Unknown Author"))
     picture = models.ImageField(null=True, blank=True)
     name = models.CharField(max_length=200)
@@ -26,8 +29,16 @@ class Book(models.Model):
     description = models.TextField(max_length=500)
     file = models.FileField(null=True)
 
+    created = models.DateTimeField(auto_now_add=True)
+    # updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
-        return f"{self.name} _ {self.author}"
+        return self.name
+
+
 
 
 class User(AbstractUser):
