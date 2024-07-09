@@ -33,7 +33,7 @@ class Book(models.Model):
     # updated = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['name']
+        ordering = ['-created']
 
     def __str__(self):
         return self.name
@@ -43,3 +43,5 @@ class Book(models.Model):
 
 class User(AbstractUser):
     books = models.ManyToManyField(Book, blank=True, related_name='users')
+    bio = models.TextField(null=True)
+    avatar = models.ImageField(null=True, default='avatar.svg')

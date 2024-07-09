@@ -12,3 +12,9 @@ class BookForm(ModelForm):
     class Meta:
         model = Book
         fields = '__all__'
+
+
+class UserForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['avatar', 'username', 'email', 'bio', 'books']
