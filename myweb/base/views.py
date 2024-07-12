@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Book, User, Genre, Author
+from .models import Book, User, Genre, Author, Comment
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -57,7 +57,7 @@ def delete(request, id):
         request.user.books.remove(book)
         return redirect('profile', request.user.id)
 
-    return render(request, 'base/delete.html', {'book': book})
+    return render(request, 'base/delete.html', {'obj': book})
 
 
 def login_page(request):
@@ -132,10 +132,17 @@ def add_book(request):
     context = {'form': form, 'authors': authors, 'genres': genres}
     return render(request, 'base/add_book.html', context)
 
-
+@login_required(login_url='login')
 def reading(request, id):
     book = Book.objects.get(id=id)
-    return render(request, 'base/reading.html', {'book': book})
+    book_comments = book.comment_set.all().order_by('-created')
+    if request.method == 'POST':
+        comment = Comment.objects.create(
+            user=request.user,
+            book=book,
+            body=request.POST.get('body')
+        )
+    return render(request, 'base/reading.html', {'book': book, 'comments': book_comments})
 
 
 def delete_book(request, id):
@@ -145,7 +152,7 @@ def delete_book(request, id):
         book.file.delete()
         book.delete()
         return redirect('home')
-    return render(request, 'base/delete.html', {'book': book})
+    return render(request, 'base/delete.html', {'obj': book})
 
 @login_required(login_url='login')
 def update_user(request):
@@ -159,3 +166,12 @@ def update_user(request):
             return redirect('profile', user.id)
 
     return render(request, 'base/update_user.html', {'form': form})
+
+
+def delete_comment(request, id):
+    comment = Comment.objects.get(id=id)
+    book = comment.book
+    if request.method == 'POST':
+        comment.delete()
+        return redirect('reading', book.id)
+    return render(request, 'base/delete.html', {'obj': comment})

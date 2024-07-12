@@ -14,5 +14,6 @@ urlpatterns = [
     path('add/', views.add_book, name='add'),
     path('reading/<str:id>/', views.reading, name='reading'),
     path('delete_book/<str:id>', views.delete_book, name='delete_book'),
-    path('update_user/', views.update_user, name='update_user')
+    path('update_user/', views.update_user, name='update_user'),
+    path('delete_comment/<str:id>', views.delete_comment, name='delete_comment')
 ]

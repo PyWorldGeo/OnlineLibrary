@@ -39,9 +39,21 @@ class Book(models.Model):
         return self.name
 
 
-
-
 class User(AbstractUser):
     books = models.ManyToManyField(Book, blank=True, related_name='users')
     bio = models.TextField(null=True)
     avatar = models.ImageField(null=True, default='avatar.svg')
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created']
+
+    def __str__(self):
+        return self.body
+
