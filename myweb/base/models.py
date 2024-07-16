@@ -57,3 +57,13 @@ class Comment(models.Model):
     def __str__(self):
         return self.body
 
+
+class Animal(models.Model):
+    name = models.CharField(max_length=50)
+    sound = models.CharField(max_length=50)
+
+    def speak(self):
+        return f'The {self.name} says "{self.sound}"'
+
+    def __str__(self):
+        return self.name
