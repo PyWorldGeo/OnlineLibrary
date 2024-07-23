@@ -1,7 +1,8 @@
+
 <style>
     .home-container {
         display: grid;
-        grid-template-columns: 1fr 5fr;
+        grid-template-columns: 2fr 7fr;
     }
 
     .genres {
@@ -20,24 +21,56 @@
 
 <div class="home-container">
     <div class="genres">
-        <h1>Genres:</h1>
-        <br>
-        <a href="{{ request.path }}">All ({{ genres.count }})</a>
-        {% for genre in genres %}
-            <hr>
-            <a href="{{ request.path }}?q={{ genre.name }}">{{genre}} ({{ genre.books.count }})</a>
-        {% endfor %}
+        <div class="topics">
+          <div class="topics__header">
+            <h2>Genres:</h2>
+          </div>
+          <ul class="topics__list">
+            <li>
+              <a class="active" href="{{ request.path }}">All <span>{{ genres.count }}</span></a>
+            </li>
+
+            {% for genre in genres %}
+            <li>
+              <a href="{{ request.path }}?q={{ genre.name }}">{{genre}} <span>{{ genre.books.count }}</span></a>
+            </li>
+            {% endfor %}
+
+
+          </ul>
+          <a class="btn btn--link" href="topics.html">
+            More
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+              <title>chevron-down</title>
+              <path d="M16 21l-13-13h-3l16 16 16-16h-3l-13 13z"></path>
+            </svg>
+          </a>
+        </div>
     </div>
 
     <div>
-        <br>
-        <div>
-            <h1 id="unique" class="new">{{ heading }}:</h1>
-        </div>
-        <a href="{% url 'add' %}">Add Book</a>
-        <br>
+        <br><br>
+        <div class="roomList__header">
+            <div style="display: flex;">
+              <div>
+                  <h2>Online Library</h2>
+                  <p>{{ books.count }} Books available</p>
+              </div>
+              <div style="margin-left: 20px;">
+                  <a class="btn btn--main" href="{% url 'add' %}">
+                      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                        <title>add</title>
+                        <path
+                          d="M16.943 0.943h-1.885v14.115h-14.115v1.885h14.115v14.115h1.885v-14.115h14.115v-1.885h-14.115v-14.115z"
+                        ></path>
+                      </svg>
+                      Add Book
+                  </a>
+              </div>
+            </div>
 
-        <br>
+          </div>
+
         <div class="row">
             {% for book in books %}
                 <div class="card" style="width: 18rem; margin-left: 30px;">
@@ -63,5 +96,4 @@
             {% endfor %}
         </div>
     </div>
-
-</div>
+    </div>

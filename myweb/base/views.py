@@ -14,7 +14,7 @@ def home(request):
     # books = Book.objects.all()
     books = Book.objects.filter(Q(name__icontains=q) | Q(description__icontains=q) | Q(genre__name__icontains=q))
     books = list(dict.fromkeys(books))
-    genres = Genre.objects.all()
+    genres = Genre.objects.all()[:3]
     # print(books[0].users.all())
     heading = "Online Library"
     context = {"books": books, "heading": heading, "genres": genres}
