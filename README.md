@@ -4,7 +4,7 @@ An interactive Django-based web application that allows users to register, uploa
 🚀 Features
 👤 User Authentication
 
-Register, login, logout.
+Register,  login,  logout.
 
 Update profile with avatar, bio, and favorite books.
 
